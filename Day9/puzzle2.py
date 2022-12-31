@@ -6,72 +6,85 @@ class Rope:
     Create a class to track the head and tail of the rope.
     """
     def __init__(self):  # Initialize the rope
-        self.head_location = (0, 0)  # Set the initial head location
-        self.tail_location = (0, 0)  # Set the initial tail location
+        self.knots = list()  # Create a list to store knot locations
+        for i in range(10):  # Create 10 knots
+            self.knots.append((0, 0))  # Initialize the locations 
         self.tail_history = [(0, 0)]  # Set the initial tail history
     def update_tail(self):
         """
         Create a method to update the tail location
         """
-        distance_x = self.head_location[0] - self.tail_location[0]  # Find the distance in the x direction
-        distance_y = self.head_location[1] - self.tail_location[1]  # Find the distance in the y direction
-        radius = np.sqrt(distance_x * distance_x + distance_y * distance_y)  # Find the radius
-        if radius > np.sqrt(2):  # Only update the tail location if the head location travels far enough
-            if distance_x > 0:  # For positive x, move to higher integer
-                new_x = self.tail_location[0] + np.ceil(distance_x / 2)
-            else:  # For negative x, move to lower integer
-                new_x = self.tail_location[0] + np.floor(distance_x / 2)
-            if distance_y > 0:  # For positive y, move to higher integer
-                new_y = self.tail_location[1] + np.ceil(distance_y / 2)
-            else:  # For negative y, move to lower integer
-                new_y = self.tail_location[1] + np.floor(distance_y / 2)
-            new_location = (int(new_x), int(new_y))  # Set the new location tuple
-            self.tail_location = new_location  # Set the new tail location
-            if new_location not in self.tail_history:  # If this is a new location, update
-                self.tail_history.append(new_location)
+        for i in range(1, 10):
+            self.head_location = self.knots[i - 1]  # Get the previous knot location
+            self.tail_location = self.knots[i]  # Get the current knot location
+            distance_x = self.head_location[0] - self.tail_location[0]  # Find the distance in the x direction
+            distance_y = self.head_location[1] - self.tail_location[1]  # Find the distance in the y direction
+            radius = np.sqrt(distance_x * distance_x + distance_y * distance_y)  # Find the radius
+            if radius > np.sqrt(2):  # Only update the tail location if the head location travels far enough
+                if distance_x > 0:  # For positive x, move to higher integer
+                    new_x = self.tail_location[0] + np.ceil(distance_x / 2)
+                else:  # For negative x, move to lower integer
+                    new_x = self.tail_location[0] + np.floor(distance_x / 2)
+                if distance_y > 0:  # For positive y, move to higher integer
+                    new_y = self.tail_location[1] + np.ceil(distance_y / 2)
+                else:  # For negative y, move to lower integer
+                    new_y = self.tail_location[1] + np.floor(distance_y / 2)
+                new_location = (int(new_x), int(new_y))  # Set the new location tuple
+                self.tail_location = new_location  # Set the new tail location
+                self.knots[i] = self.tail_location  # Save the updated knot location
+                if (i == 9) and (new_location not in self.tail_history):  # If this is a new location, update
+                    self.tail_history.append(new_location)
     def move_up(self, steps):
         """
         Create a method to update the head and tail locations by moving up
         """
         for i in range(steps):  # Move a defined number of steps
+            self.head_location = self.knots[0]  # Get the current head location
             current_x = self.head_location[0]  # Get current x head location
             current_y = self.head_location[1]  # Get current y head location
             new_x = current_x  # Update x location
             new_y = current_y + 1  # Update y location
             self.head_location = (new_x, new_y)  # Set the new head location
+            self.knots[0] = self.head_location  # Save the new head location
             self.update_tail()  # Update the tail location
     def move_right(self, steps):
         """
         Create a method to update the head and tail locations by moving right
         """
         for i in range(steps):  # Move a defined number of steps
+            self.head_location = self.knots[0]  # Get the current head location
             current_x = self.head_location[0]  # Get current x head location
             current_y = self.head_location[1]  # Get current y head location
             new_x = current_x + 1  # Update x location
             new_y = current_y  # Update y location
             self.head_location = (new_x, new_y)  # Set the new head location
+            self.knots[0] = self.head_location  # Save the new head location
             self.update_tail()  # Update the tail location
     def move_left(self, steps):
         """
         Create a method to update the head and tail locations by moving left
         """
         for i in range(steps):  # Move a defined number of steps
+            self.head_location = self.knots[0]  # Get the current head location
             current_x = self.head_location[0]  # Get current x head location
             current_y = self.head_location[1]  # Get current y head location
             new_x = current_x - 1  # Update x location
             new_y = current_y  # Update y location
             self.head_location = (new_x, new_y)  # Set the new head location
+            self.knots[0] = self.head_location  # Save the new head location
             self.update_tail()  # Update the tail location
     def move_down(self, steps):
         """
         Create a method to update the head and tail locations by moving down
         """
         for i in range(steps):  # Move a defined number of steps
+            self.head_location = self.knots[0]  # Get the current head location
             current_x = self.head_location[0]  # Get current x head location
             current_y = self.head_location[1]  # Get current y head location
             new_x = current_x  # Update x location
             new_y = current_y - 1  # Update y location
             self.head_location = (new_x, new_y)  # Set the new head location
+            self.knots[0] = self.head_location  # Save the new head location
             self.update_tail()  # Update the tail location
 
 
